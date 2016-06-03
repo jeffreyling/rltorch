@@ -70,7 +70,7 @@ class DiscretePolicyGradient(Policy):
             def condition(l):
                 return(l[0]<l[1])
 
-    
+
 
 
             all_observations=tf.placeholder(tf.float32,[None,])
