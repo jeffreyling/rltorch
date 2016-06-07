@@ -13,8 +13,8 @@ function Box:__init(low,high,shape)
     self.high=torch.Tensor(shape):fill(high)
   else
     self.low=low
-    self.high=high
-  end  
+    self.high=high    
+  end
 end
  
 ---Update the environment given that one agent has chosen one action
@@ -37,6 +37,10 @@ function Box:contains(x)
   
   return(true)
 end 
+
+function Box:size()
+  return(self.low:size())
+end
 
 
  

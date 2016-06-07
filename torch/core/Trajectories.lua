@@ -1,5 +1,4 @@
- 
-require 'tds' 
+tds=require 'tds'  
    
 local Trajectories = torch.class('rltorch.Trajectories'); 
 

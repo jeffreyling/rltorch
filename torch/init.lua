@@ -9,6 +9,7 @@ include('Trajectories.lua')
 
 include('Sensor.lua')
 include('IdSensor.lua')
+include('BatchVectorSensor.lua')
 
 include('Space.lua')
 include('Discrete.lua')
@@ -18,10 +19,11 @@ include('MountainCar_v0.lua')
 
 include('Policy.lua')
 include('RandomPolicy.lua')
+include('PolicyGradient.lua')
 
 include('ExperimentLog.lua')
 include('ExperimentLogCSV.lua')
 include('ExperimentLogConsole.lua')
-
+include('ModelsUtils.lua')
 
 return rltorch

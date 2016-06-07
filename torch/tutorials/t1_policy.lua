@@ -1,7 +1,7 @@
  
 require('rltorch')
 env = rltorch.MountainCar_v0()
-sensor=rltorch.IdSensor()
+sensor=rltorch.IdSensor((env.observation_space)
 policy=rltorch.RandomPolicy(env.observation_space,env.action_space,sensor)
 
 MAX_LENGTH=100

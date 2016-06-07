@@ -6,7 +6,7 @@ function IdSensor:__init(observation_space)
   rltorch.Sensor.__init(self,observation_space)
 end
 
-function IdSensor:process(observation)
+function IdSensor:process(observation)  
   return(observation)
 end
 

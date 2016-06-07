@@ -1,5 +1,4 @@
- 
-require 'tds' 
+tds=require 'tds' 
    
 local Trajectory = torch.class('rltorch.Trajectory'); 
 
@@ -7,7 +6,7 @@ function Trajectory:__init()
   self.observations=tds.Vec()
   self.actions=tds.Vec()
   self.feedback=tds.Vec()
-  self.done=tds.Vec()
+  self.done=tds.Vec()  
 end
 
 function Trajectory:push_observation(o)
