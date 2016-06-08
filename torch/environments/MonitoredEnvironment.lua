@@ -3,9 +3,10 @@ local MonitoredEnvironment = torch.class('rltorch.MonitoredEnvironment','rltorch
   
  
 --- Initialize the environment
-function MonitoredEnvironment:__init(env,log)
+function MonitoredEnvironment:__init(env,log,discount_factor)
   rltorch.Environment.__init(self)
   
+  if (discount_factor==nil) then self.discount_factor=1 else self.discount_factor=discount_factor end
   self.env=env
   self.action_space=env.action_space
   self.observation_space=env.observation_space
@@ -21,7 +22,8 @@ end
 -- @returns observation,reward,done,info
 function MonitoredEnvironment:step(agent_action)
   local r=self.env:step(agent_action)  
-  self.cumul_reward=self.cumul_reward+r[2]  
+  self.cumul_reward=self.cumul_reward+self.current_discount_factor*r[2]
+  self.current_discount_factor=self.current_discount_factor*self.discount_factor
   self.t=self.t+1
   return r
 end
@@ -37,7 +39,8 @@ function MonitoredEnvironment:reset()
    self.log:newIteration()
 
    self.t=0
-   self.cumul_reward=0
+   self.cumul_reward=0  
+   self.current_discount_factor=1
    return self.env:reset()
 end 
 

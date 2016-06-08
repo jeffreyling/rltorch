@@ -11,19 +11,27 @@ local PolicyGradient = torch.class('rltorch.PolicyGradient','rltorch.Policy');
 ----- optim = the optim method
 ----- optim_params = the optim state
 ----- scaling_reward = the scaling factor for the reward
+----- arguments.size_memory_for_bias = number of steps to aggregate for computing the bias uin policy gradient
 function PolicyGradient:__init(observation_space,action_space,sensor,arguments)
   rltorch.Policy.__init(self,observation_space,action_space) 
   self.sensor=sensor
-  
-  
+    
   assert(arguments.policy_module~=nil)
   assert(arguments.max_trajectory_size~=nil)
   assert(arguments.optim~=nil)
   assert(arguments.optim_params~=nil)
+  
+  if (arguments.size_memory_for_bias==nil) then
+    self.memory_reward=torch.Tensor(1):fill(0)
+  else
+    self.memory_reward=torch.Tensor(arguments.size_memory_for_bias):fill(0)
+  end
+  self.memory_reward_position=1
+  
   self.optim=arguments.optim
   self.optim_params=arguments.optim_params
   
-  if (arguments.scaling_reward==nil) then arguments.scaling_reward=1 end 
+  if (arguments.scaling_reward==nil) then self.scaling_reward=1 else self.scaling_reward=arguments.scaling_reward end 
   
   self.policy_module=arguments.policy_module
   self.max_trajectory_size=arguments.max_trajectory_size
@@ -33,21 +41,21 @@ end
 function PolicyGradient:init()    
   self.params, self.grad = rltorch.ModelsUtils():combine_all_parameters(self.policy_module) 
   self.modules=rltorch.ModelsUtils():clone_many_times(self.policy_module,self.max_trajectory_size)
-  self.delta=torch.Tensor(self.action_space.n):fill(0)
+  self.delta=torch.Tensor(1,self.action_space.n):fill(0)
   
   self.feval = function(params_new)
     if self.params ~= params_new then
         self.params:copy(params_new)
     end
-
-    self.grad:zero()
     
-    --- Compute sum of reward
-    local sum_reward=0
-    for t=1,self.trajectory:get_number_of_observations()-1 do
-      sum_reward=sum_reward+self.trajectory.feedback[t]
-    end
-    sum_reward=torch.Tensor({sum_reward})
+    self.grad:zero()
+    self.memory_reward[self.memory_reward_position]=self.reward_trajectory
+    self.memory_reward_position=self.memory_reward_position+1
+    if (self.memory_reward_position>self.memory_reward:size(1)) then self.memory_reward_position=1 end
+    
+    local avg_reward=self.memory_reward:mean()
+    print("AVG Reward = "..avg_reward)
+    sum_reward=torch.Tensor(1):fill(self.reward_trajectory-avg_reward)
     
     for t=1,self.trajectory:get_number_of_observations()-1 do
       local out=self.modules[t].output
@@ -76,14 +84,14 @@ end
 
 function PolicyGradient:sample()
   local out=self.modules[self.trajectory:get_number_of_observations()]:forward(self.last_sensor)
-  local vmax,imax=out:max(1)
+  local vmax,imax=out:max(2)
   return(imax[1][1])
 end
 
 function PolicyGradient:end_episode(feedback)
   ---- Launch the gradient optimization method
+  self.reward_trajectory=feedback*self.
   local _,fs=self.optim(self.feval,self.params,self.optim_params)      
-  
 end
 
  

@@ -12,3 +12,6 @@ function BatchVectorSensor:process(observation)
   return(self.module:forward(observation))
 end
 
+function BatchVectorSensor:size()
+  return(self.observation_space:size()[1])
+end

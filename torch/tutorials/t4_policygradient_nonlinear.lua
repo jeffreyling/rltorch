@@ -4,17 +4,15 @@ log=rltorch.ExperimentLogConsole()
 --log=rltorch.ExperimentLogCSV(false,"tmp/","now")
 
 
-MAX_LENGTH=60
-DISCOUNT_FACTOR=0.95
+MAX_LENGTH=10
+DISCOUNT_FACTOR=1.0
 NB_TRAJECTORIES=10000
 
 --env = rltorch.MountainCar_v0()
---env = rltorch.CartPole_v0()
+env = rltorch.CartPole_v0()
 math.randomseed(os.time())
-env = rltorch.EmptyMaze_v0(10,10)
 env=rltorch.MonitoredEnvironment(env,log,DISCOUNT_FACTOR)
---sensor=rltorch.BatchVectorSensor(env.observation_space)
-sensor=rltorch.TilingSensor2D(env.observation_space,30,30)
+sensor=rltorch.BatchVectorSensor(env.observation_space)
 
 local size_input=sensor:size()
 print("Inpust size is "..size_input)
@@ -22,8 +20,8 @@ local nb_actions=env.action_space.n
 print("Number of actions is "..nb_actions)
 
 -- Creating the policy module
-local module_policy=nn.Sequential():add(nn.Linear(size_input,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical())
-module_policy:reset(0.0001)
+local module_policy=nn.Sequential():add(nn.Linear(size_input,size_input*2)):add(nn.Tanh()):add(nn.Linear(size_input*2,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical())
+module_policy:reset(0.1)
 
 
 
@@ -34,7 +32,7 @@ local arguments={
     optim_params= {
         learningRate =  0.01  
       },
-    scaling_reward=1.0,
+    scaling_reward=1,
     size_memory_for_bias=100
   }
   
