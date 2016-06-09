@@ -28,9 +28,8 @@ end
 -- @returns observation,reward,done,info
 --- Here action is 1 2 or 3
 function CartPole_v0:step(agent_action)  
-       
-        self.action = agent_action
-        assert(agent_action==1 or agent_action==2, "Invalid action")
+        local action = agent_action
+        assert(action==1 or action==2, "Invalid action")
         local x=self.state[1]
         local x_dot=self.state[2]
         local theta=self.state[3] 
@@ -73,7 +72,7 @@ function CartPole_v0:step(agent_action)
             self.steps_beyond_done = self.steps_beyond_done+1
             reward = 0.0
         end
-        
+          
         return {self.state, reward, done} 
 end
 
@@ -93,5 +92,44 @@ end
 function CartPole_v0:render(arg)
   if (arg.mode=="console") then
     print("Position = "..self.state[1].." / Vitesse = "..self.state[2].." // Angle "..self.state[3].." // Vitesse Angulaire "..self.state[4])
+  elseif (arg.mode=="qt") then
+      local SX=640
+      local SY=480
+      local POLE_SIZE=SY/5
+          
+    
+    if (self.__render_widget==nil) then 
+      require 'qt'
+      require 'qtuiloader'
+      require 'qtwidget'
+      
+      self.__render_widget = qtwidget.newwindow(SX,SY,"CatPole_v0")
+    end
+    local CART_SX=SX/20
+    local CART_SY=SY/20
+    self.__render_widget:setcolor("white")
+      
+    self.__render_widget:showpage()
+    self.__render_widget:stroke()
+    self.__render_widget:setcolor("red")
+    local x=self.state[1]*10
+    local VX=x+SX/2
+    local VY=SY/2
+    self.__render_widget:rectangle(VX-CART_SX/2,VY-CART_SY/2,CART_SX,CART_SY)
+    self.__render_widget:fill()
+    
+    local angle=self.state[3]
+    local pole_x=math.sin(angle)*POLE_SIZE
+    local pole_y=-math.cos(angle)*POLE_SIZE
+    
+    self.__render_widget:setlinewidth(5)
+    self.__render_widget:setcolor("blue")
+    self.__render_widget:moveto(VX,VY)
+    self.__render_widget:lineto(VX+pole_x,VY+pole_y)    
+    self.__render_widget:stroke()
+    self.__render_widget:painter()
+    
+    sys.sleep(1.0/arg.fps)
   end
 end
+

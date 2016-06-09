@@ -4,12 +4,12 @@ log=rltorch.ExperimentLogConsole()
 --log=rltorch.ExperimentLogCSV(false,"tmp/","now")
 
 
-MAX_LENGTH=10
+MAX_LENGTH=1000
 DISCOUNT_FACTOR=1.0
 NB_TRAJECTORIES=10000
 
---env = rltorch.MountainCar_v0()
-env = rltorch.CartPole_v0()
+env = rltorch.MountainCar_v0()
+--env = rltorch.CartPole_v0()
 math.randomseed(os.time())
 env=rltorch.MonitoredEnvironment(env,log,DISCOUNT_FACTOR)
 sensor=rltorch.BatchVectorSensor(env.observation_space)
@@ -22,8 +22,6 @@ print("Number of actions is "..nb_actions)
 -- Creating the policy module
 local module_policy=nn.Sequential():add(nn.Linear(size_input,size_input*2)):add(nn.Tanh()):add(nn.Linear(size_input*2,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical())
 module_policy:reset(0.1)
-
-
 
 local arguments={
     policy_module = module_policy,
@@ -49,7 +47,8 @@ for i=1,NB_TRAJECTORIES do
     local current_discount=1.0
     
     for t=1,MAX_LENGTH do  
-      env:render{mode="empty"}      
+      env:render{mode="qt",fps=30}      
+     -- env:render{mode="human"}      
       local action=policy:sample()      
       local observation,reward,done,info=unpack(env:step(action))    
       policy:feedback(reward) -- the immediate reward is provided to the policy

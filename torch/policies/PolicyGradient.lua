@@ -90,8 +90,8 @@ end
 
 function PolicyGradient:end_episode(feedback)
   ---- Launch the gradient optimization method
-  self.reward_trajectory=feedback*self.
-  local _,fs=self.optim(self.feval,self.params,self.optim_params)      
+  self.reward_trajectory=feedback*self.scaling_reward 
+  local _,fs=self.optim(self.feval,self.params,self.optim_params) 
 end
 
  

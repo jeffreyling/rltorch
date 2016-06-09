@@ -52,9 +52,47 @@ function MountainCar_v0:close()
   
 end
 
+
+function MountainCar_v0:_height(xs)
+  return math.sin(3 * xs)*.45+.55
+end
+
 --- Clone the environment
 function MountainCar_v0:render(arg)
   if (arg.mode=="console") then
     print("Position = "..self.state[1].." / Speed = "..self.state[2])
+    elseif (arg.mode=="qt") then
+      local SX=640
+      local SY=480
+      local POLE_SIZE=SY/5
+      if (self.__render_widget==nil) then 
+        require 'qt'
+        require 'qtuiloader'
+        require 'qtwidget'
+        
+        self.__render_widget = qtwidget.newwindow(SX,SY,"MountainCar_v0")
+      end
+      
+    ---
+    local stepx=self.max_position-self.min_position/SX
+    local scale_y=SY*0.5
+    self.__render_widget:showpage()
+    self.__render_widget:setcolor("black")
+    do
+      local pos=self.min_position
+      local py=SY/2*scale_y+self:_height(pos)
+      self.__render_widget:moveto(1,py)
+      for px=2,SX,10 do
+        print(px)
+          pos=pos+stepx*10
+          py=SY/2*scale_y+self:_height(pos)
+          self.__render_widget:lineto(px,py)
+      end
+      self.__render_widget:fill(true)
+      self.__render_widget:stroke()
+    end
+    self.__render_widget:painter()
+    
+    --sys.sleep(1.0/arg.fps)
   end
 end
