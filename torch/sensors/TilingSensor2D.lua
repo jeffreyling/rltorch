@@ -13,11 +13,12 @@ end
 function TilingSensor2D:process(observation)    
   self.p:fill(0)
   local v=observation:clone()-self.observation_space.low 
-  v:cdiv(self.observation_space.high)
+  v:cdiv(self.observation_space.high)  
   local i1=math.floor(v[1]*self.n1)
   local i2=math.floor(v[2]*self.n2)
   if (i1>=self.n1) then i1=self.n1-1 end
   if (i2>=self.n2) then i2=self.n2-1 end
+  --print(i1.." et "..i2)
   local i=i1*self.n2+i2
   i=i+1
   self.p[1][i]=1

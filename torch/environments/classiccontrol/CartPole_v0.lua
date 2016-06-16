@@ -18,7 +18,7 @@ function CartPole_v0:__init()
         self.x_threshold = 2.4
 
         -- Angle limit set to 2 * theta_threshold_radians so failing observation is still within bounds
-        local high = torch.Tensor({self.x_threshold, math.huge, self.theta_threshold_radians * 2, math.huge})
+        local high = torch.Tensor({self.x_threshold, 100000, self.theta_threshold_radians * 2, 100000})
         self.action_space = rltorch.Discrete(2)
         self.observation_space = rltorch.Box(-high, high)
 end

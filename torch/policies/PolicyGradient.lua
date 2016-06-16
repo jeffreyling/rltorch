@@ -21,12 +21,9 @@ function PolicyGradient:__init(observation_space,action_space,sensor,arguments)
   assert(arguments.optim~=nil)
   assert(arguments.optim_params~=nil)
   
-  if (arguments.size_memory_for_bias==nil) then
-    self.memory_reward=torch.Tensor(1):fill(0)
-  else
-    self.memory_reward=torch.Tensor(arguments.size_memory_for_bias):fill(0)
-  end
+  self.memory_reward=torch.Tensor(1):fill(0)
   self.memory_reward_position=1
+  self.memory_reward_size=arguments.size_memory_for_bias
   
   self.optim=arguments.optim
   self.optim_params=arguments.optim_params
@@ -49,12 +46,12 @@ function PolicyGradient:init()
     end
     
     self.grad:zero()
+    if (self.memory_reward_position>self.memory_reward:size(1)) then self.memory_reward:resize(self.memory_reward_position) end
     self.memory_reward[self.memory_reward_position]=self.reward_trajectory
     self.memory_reward_position=self.memory_reward_position+1
-    if (self.memory_reward_position>self.memory_reward:size(1)) then self.memory_reward_position=1 end
-    
+    if (self.memory_reward_position>self.memory_reward_size) then self.memory_reward_position=1 end    
     local avg_reward=self.memory_reward:mean()
-    print("AVG Reward = "..avg_reward)
+    print("AVG Reward = "..avg_reward.." pour "..self.memory_reward:size(1))
     sum_reward=torch.Tensor(1):fill(self.reward_trajectory-avg_reward)
     
     for t=1,self.trajectory:get_number_of_observations()-1 do
@@ -75,6 +72,7 @@ end
 
 function  PolicyGradient:observe(observation)  
   self.last_sensor=self.sensor:process(observation):clone()
+  --print(self.last_sensor)
   self.trajectory:push_observation(self.last_sensor)  
 end
 
