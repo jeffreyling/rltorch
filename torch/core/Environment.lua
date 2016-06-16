@@ -4,7 +4,8 @@
 local Environment = torch.class('rltorch.Environment'); 
  
 --- Initialize the environment
-function Environment:__init()
+function Environment:__init(parameters)
+  self.parameters=parameters
 end
  
 ---Update the environment given that one agent has chosen one action

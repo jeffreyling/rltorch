@@ -13,6 +13,8 @@ function MonitoredEnvironment:__init(env,log,discount_factor)
   
   self.log=log 
   self.log:addFixedParameters({environment=torch.typename(self.env)})
+  if (self.env.parameters~=nil) then self.log:addFixedParameters({environment_parameters=self.env.parameters}) end
+    
   self.first=true
   --self.log:newIteration()
 end
