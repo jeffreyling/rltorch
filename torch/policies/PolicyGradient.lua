@@ -37,8 +37,10 @@ end
 
 function PolicyGradient:init()    
   self.params, self.grad = rltorch.ModelsUtils():combine_all_parameters(self.policy_module) 
+  print("== PolicyGradient : Cloning module "..self.max_trajectory_size.." times.")
   self.modules=rltorch.ModelsUtils():clone_many_times(self.policy_module,self.max_trajectory_size)
-  self.delta=torch.Tensor(1,self.action_space.n):fill(0)
+  print("== PolicyGradient : Cloning DONE")
+  self.delta=torch.Tensor(1,self.action_space.n):fill(1)
   
   self.feval = function(params_new)
     if self.params ~= params_new then

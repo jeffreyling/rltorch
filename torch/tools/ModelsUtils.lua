@@ -130,7 +130,7 @@ function ModelsUtils:clone_many_times(net, T)
     mem:writeObject(net)
 
     for t = 1, T do
-      if (t%1000==0) then print("Cloning : "..t.." / "..T) end
+      if (t%100==0) then print("Cloning : "..t.." / "..T) end
         -- We need to use a new reader for each clone.
         -- We don't want to use the pointers to already read objects.
         local reader = torch.MemoryFile(mem:storage(), "r"):binary()
@@ -154,7 +154,7 @@ function ModelsUtils:clone_many_times(net, T)
 
         clones[t] = clone
     end
-        collectgarbage()
+       collectgarbage()
 
     mem:close()
     return clones
