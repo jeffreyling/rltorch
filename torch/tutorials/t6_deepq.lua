@@ -8,12 +8,12 @@ MAX_LENGTH=1000
 DISCOUNT_FACTOR=1.0
 NB_TRAJECTORIES=10000
 
---env = rltorch.MountainCar_v0()
-env = rltorch.CartPole_v0()
+env = rltorch.MountainCar_v0()
+--env = rltorch.CartPole_v0()
 math.randomseed(os.time())
 env=rltorch.MonitoredEnvironment(env,log,DISCOUNT_FACTOR)
-sensor=rltorch.BatchVectorSensor(env.observation_space)
---sensor=rltorch.TilingSensor2D(env.observation_space,30,30)
+--sensor=rltorch.BatchVectorSensor(env.observation_space)
+sensor=rltorch.TilingSensor2D(env.observation_space,30,30)
 
 local size_input=sensor:size()
 print("Inpust size is "..size_input)
@@ -21,21 +21,21 @@ local nb_actions=env.action_space.n
 print("Number of actions is "..nb_actions)
 
 -- Creating the policy module
-module_policy=nn.Sequential():add(nn.Linear(size_input,size_input*2)):add(nn.Tanh()):add(nn.Linear(size_input*2,nb_actions))
---module_policy=nn.Sequential():add(nn.Linear(size_input,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical())
+--module_policy=nn.Sequential():add(nn.Linear(size_input,size_input*2)):add(nn.Tanh()):add(nn.Linear(size_input*2,nb_actions))
+module_policy=nn.Sequential():add(nn.Linear(size_input,nb_actions)) --:add(nn.SoftMax()):add(nn.ReinforceCategorical())
 module_policy:reset(0.001)
 
 local arguments={
     policy_module = module_policy,
     max_trajectory_size = MAX_LENGTH,
-    optim=optim.adam,
+    optim=optim.sgd,
     optim_params= {
-        learningRate =  0.001  
+        learningRate =  0.01  
       },
     scaling_reward=1.0, --/MAX_LENGTH,
     size_minibatch=1,
     size_memory=10,
-    discount_factor=0.99,
+    discount_factor=1,
     epsilon_greedy=0.1
   }
   
@@ -52,7 +52,7 @@ for i=1,NB_TRAJECTORIES do
     local current_discount=1.0
     
     for t=1,MAX_LENGTH do  
-      env:render{mode="qt",fps=30}      
+      --env:render{mode="qt",fps=30}      
      -- env:render{mode="human"}      
       local action=policy:sample()      
       local observation,reward,done,info=unpack(env:step(action))    

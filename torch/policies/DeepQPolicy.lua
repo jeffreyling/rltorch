@@ -24,6 +24,7 @@ function DeepQPolicy:__init(observation_space,action_space,sensor,arguments)
   assert(arguments.size_memory~=nil)
   assert(arguments.discount_factor~=nil)
   assert(arguments.epsilon_greedy~=nil)
+  assert(arguments.scaling_reward~=nil)
   
   self.memory={}
   self.memory_position=0
@@ -67,27 +68,25 @@ function DeepQPolicy:init()
     end
     
     local vmax,imax=self.policy_module:forward(self.tensor_observation_t_plus_one):max(2)
-    print(imax)
+    
     local out=self.policy_module:forward(self.tensor_observation_t)
     self.tensor_objective:copy(out)
     
     for b=1,self.arguments.size_minibatch do
       local action=self.memory[idxs[b]].action
-      local reward=self.memory[idxs[b]].reward
+      local reward=self.memory[idxs[b]].reward*self.arguments.scaling_reward
       if (not self.memory[idxs[b]].done) then
-          reward=reward --+vmax[b][1]*self.arguments.discount_factor
-      end
+          reward=reward+vmax[b][1]*self.arguments.discount_factor
+      else
+      
+    end
+    -- print(reward)
       self.tensor_objective[b][action]=reward
     end
     
-    print(out)
-    print(self.tensor_objective)
-    print("============================")
     
     local loss=self.loss:forward(out,self.tensor_objective)
     local delta=self.loss:backward(out,self.tensor_objective)
-    print(delta)
-    print("++++++++++")
     self.policy_module:backward(self.tensor_observation_t,delta)
     
     return loss,self.grad           
@@ -97,7 +96,7 @@ end
 function DeepQPolicy:chooseMemoryCell(ob)
   if (self.memory_size==self.arguments.size_memory) then
     local _,fs=self.optim(self.feval,self.params,self.optim_params)
-    print("Loss is "..fs[1])
+   -- print("Loss is "..fs[1])
   end  
   
   if (self.memory_size<self.arguments.size_memory) then
@@ -137,8 +136,6 @@ function DeepQPolicy:sample()
     local out=self.policy_module:forward(self.last_sensor)
     local vmax,imax=out:max(2)
     action_taken=imax[1][1]
-    print(out)
-    print("Loss action "..action_taken)
   end
   
   self.memory[self.memory_position].action = action_taken
