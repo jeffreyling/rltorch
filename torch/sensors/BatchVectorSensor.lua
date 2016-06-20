@@ -8,8 +8,8 @@ function BatchVectorSensor:__init(observation_space)
   local fs=1
   local ss=self.observation_space:size():size()
   for i=1,ss do fs=fs*self.observation_space:size()[i] end  
-  self._size=fs
-  self.module=nn.Reshape(1,self._size,false)
+  self.my_size=fs
+  self.module=nn.Reshape(1,self.my_size,false)
 end
 
 function BatchVectorSensor:process(observation)
@@ -18,5 +18,5 @@ function BatchVectorSensor:process(observation)
 end
 
 function BatchVectorSensor:size()
-  return(self._size)
+  return(self.my_size)
 end

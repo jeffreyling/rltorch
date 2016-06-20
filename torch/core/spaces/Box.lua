@@ -13,7 +13,11 @@ function Box:__init(low,high,shape)
     self.high=torch.Tensor(shape):fill(high)
   else
     self.low=low
-    self.high=high    
+    self.high=high  
+    print(low)
+    print(high)
+    print(type(low))
+    print(type(high))
   end
 end
  
