@@ -8,6 +8,7 @@ require 'image'
 function BatchVectorSensor_ForAtari:__init(observation_space,height,width,flag_grayscale)
   rltorch.Sensor.__init(self,observation_space)
   
+  print(self.observation_space:size())
   assert(self.observation_space:size()[1]==3)
   self.width=width
   self.height=height
