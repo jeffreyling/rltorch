@@ -1,5 +1,6 @@
 tds=require 'tds' 
-   
+
+-- This class describes a trajectory (o1, a1, r1, o2, a2, r2, o3, ....)
 local Trajectory = torch.class('rltorch.Trajectory'); 
 
 function Trajectory:__init()

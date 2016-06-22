@@ -1,7 +1,7 @@
 require 'torch'
 
+---- SOME TOOLS
 
- --- Describe a policy (an agent)
  local ModelsUtils = torch.class('rltorch.ModelsUtils');
  
 function ModelsUtils:combine_all_parameters(...)

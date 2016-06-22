@@ -1,10 +1,9 @@
 require 'torch'
 
- --- Describe a sequential environment with one or many agents
+
 local Atari_Breakout_v0 = torch.class('rltorch.Atari_Breakout_v0','rltorch.Environment'); 
 
---- Initialize the environment
---- parameters = rom,width,height
+
 function Atari_Breakout_v0:__init(parameters)
   rltorch.Environment.__init(self,parameters)
   
@@ -55,12 +54,10 @@ function Atari_Breakout_v0:step(agent_action)
 end
 
 
---- Tells if we are in a terminal state or not
 function Atari_Breakout_v0:close()
   
 end
 
---- Clone the environment
 function Atari_Breakout_v0:render(arg)
   if (arg.mode=="console") then
     print("Cannot render Atari in console")

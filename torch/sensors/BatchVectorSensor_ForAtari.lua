@@ -4,11 +4,11 @@ require 'image'
 
 
 
---- Transform a single (n) torch.Tensor to a (1,n) torch Tensor.
+--- Transform a 3xWxH tensor to either a (1,3*width*height) tensor (color) or a (1,1*width*height) (grayscale)
+---- height,width = size for rescaling
+---- flag_grayscale = true if grayscale, false if color
 function BatchVectorSensor_ForAtari:__init(observation_space,height,width,flag_grayscale)
-  rltorch.Sensor.__init(self,observation_space)
-  
-  print(self.observation_space:size())
+  rltorch.Sensor.__init(self,observation_space)  
   assert(self.observation_space:size()[1]==3)
   self.width=width
   self.height=height
@@ -28,7 +28,6 @@ end
 
 function BatchVectorSensor_ForAtari:process(observation)
  
-  -- Rescale
   local resc=self.rescaled
   if ((self.height~=observation:size(2)) or (self.width~=observation:size(3))) then
      image.scale(resc,observation,"simple")
@@ -36,7 +35,6 @@ function BatchVectorSensor_ForAtari:process(observation)
     resc=observation
   end
   
-  -- Conversion to double tensor
   self.rescaled_double:copy(resc):div(255)
   
   --- Gray ? 
@@ -52,7 +50,6 @@ function BatchVectorSensor_ForAtari:size()
   return(self._size)
 end
 
--- convert rgb to grayscale by averaging channel intensities
 function BatchVectorSensor_ForAtari:rgb2gray(im)
 	local dim, w, h = im:size()[1], im:size()[2], im:size()[3]
 	assert(dim == 3,'<error> expected 3 channels')

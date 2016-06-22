@@ -1,17 +1,19 @@
 require 'nn'
 require 'dpnn'  
   
-  --- Describe a sequential environment with one or many agents
+  --- A policy based on Deep Q Learning (using a epsilon-greedy exploration)
 local DeepQPolicy = torch.class('rltorch.DeepQPolicy','rltorch.Policy'); 
 
 --- the policy_module is a R^n -> nb_actions >sampling vector
 --- ARGUMENTS= 
------ policy_module = the policy module (takes a B*n matrix to a B*A vector with one q value for each action)
------ max_trajectory_size  = the size max of the trajectory (needed for copying the module)
+----- policy_module = the policy module (takes a B*n matrix to a B*A vector with one q value for each action, B being the size of the minibatch)
 ----- optim = the optim method
 ----- optim_params = the optim state
------ scaling_reward = the scaling factor for the reward
------ arguments.size_memory_for_bias = number of steps to aggregate for computing the bias uin policy gradient
+----- size_minibatch = the size of the mini-batches
+----- size_memory = the size of the memory for experience reply
+----- discount_factor = the discount_factor
+----- epsilon_greedy = the value of epsilon in epsilon greedy
+----- scaling_reward = the reward sclaing value
 function DeepQPolicy:__init(observation_space,action_space,sensor,arguments)
   rltorch.Policy.__init(self,observation_space,action_space) 
   self.sensor=sensor
@@ -38,6 +40,7 @@ function DeepQPolicy:__init(observation_space,action_space,sensor,arguments)
   
   self.policy_module=arguments.policy_module
   self.max_trajectory_size=arguments.max_trajectory_size
+  self.train=true
   self:init()
 end
 
@@ -94,10 +97,9 @@ function DeepQPolicy:init()
 end
 
 function DeepQPolicy:chooseMemoryCell(ob)
-  if (self.memory_size==self.arguments.size_memory) then
-    local _,fs=self.optim(self.feval,self.params,self.optim_params)
-   -- print("Loss is "..fs[1])
-  end  
+--  if (self.memory_size==self.arguments.size_memory) then
+--    local _,fs=self.optim(self.feval,self.params,self.optim_params)
+--  end  
   
   if (self.memory_size<self.arguments.size_memory) then
     self.memory_position=self.memory_position+1
@@ -125,12 +127,11 @@ end
 
 function DeepQPolicy:feedback(reward)
   self.memory[self.memory_position].reward=reward
-  self.memory[self.memory_position].done=false
-  
+  self.memory[self.memory_position].done=false  
 end
 
 function DeepQPolicy:sample()
-  if (math.random()<self.arguments.epsilon_greedy) then
+  if ((math.random()<self.arguments.epsilon_greedy) and (self.train)) then
     action_taken=math.random(self.action_space.n)
   else
     local out=self.policy_module:forward(self.last_sensor)
@@ -143,10 +144,13 @@ function DeepQPolicy:sample()
 end
 
 function DeepQPolicy:end_episode(feedback)
-  ---- Launch the gradient optimization method
   self.memory[self.last_memory_position].done=true
-  
-  
+
+  if (self.memory_size==self.arguments.size_memory) then
+    local _,fs=self.optim(self.feval,self.params,self.optim_params)
+  end  
+
+
 end
 
  

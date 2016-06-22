@@ -1,21 +1,17 @@
 -- require 'rltorch'
  
- --- Describe a sequential environment with one or many agents
+ --- Describe an (observation/action) space
 local Space = torch.class('rltorch.Space'); 
  
---- Initialize the environment
 function Space:__init()
 end
  
----Update the environment given that one agent has chosen one action
--- @params agent_action the action of the agent
--- @returns observation,reward,done,info
+---- Sample one element of the space with a uniform distribution
 function Space:sample()
   assert(false,"Space:sample")
 end
 
----- Returns the initial domain 
--- @return the action domain
+---- Returns true of the space contains this element
 function Space:contains(x)
    assert(false,"Space:contains")
 end 

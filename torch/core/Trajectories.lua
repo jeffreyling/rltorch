@@ -1,5 +1,8 @@
 tds=require 'tds'  
    
+   
+--- Describe a memory of trajectories
+
 local Trajectories = torch.class('rltorch.Trajectories'); 
 
 function Trajectories:__init(observation_space,action_space)

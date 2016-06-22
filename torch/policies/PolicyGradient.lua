@@ -1,17 +1,18 @@
 require 'nn'
 require 'dpnn'  
   
-  --- Describe a sequential environment with one or many agents
+  --- A policy based on REINFORCE for discrete action spaces
+
 local PolicyGradient = torch.class('rltorch.PolicyGradient','rltorch.Policy'); 
 
 --- the policy_module is a R^n -> nb_actions >sampling vector
 --- ARGUMENTS= 
------ policy_module = the policy module (takes a 1*n matrix to a 1*n vector with one for the chosen action
------ max_trajectory_size  = the size max of the trajectory (needed for copying the module)
------ optim = the optim method
------ optim_params = the optim state
+----- policy_module = the policy module (takes a 1*n matrix to a 1*n vector with one for the chosen action using dpnn)
+----- max_trajectory_size  = the maximum length of the trajectories
+----- optim = the optim method (e.g optim.adam)
+----- optim_params = the optim initial state 
 ----- scaling_reward = the scaling factor for the reward
------ arguments.size_memory_for_bias = number of steps to aggregate for computing the bias uin policy gradient
+----- arguments.size_memory_for_bias = number of steps to aggregate for computing the bias in policy gradient -- the n last reward values are used to correct the reward obtained.
 function PolicyGradient:__init(observation_space,action_space,sensor,arguments)
   rltorch.Policy.__init(self,observation_space,action_space) 
   self.sensor=sensor
@@ -37,9 +38,7 @@ end
 
 function PolicyGradient:init()    
   self.params, self.grad = rltorch.ModelsUtils():combine_all_parameters(self.policy_module) 
-  print("== PolicyGradient : Cloning module "..self.max_trajectory_size.." times.")
   self.modules=rltorch.ModelsUtils():clone_many_times(self.policy_module,self.max_trajectory_size)
-  print("== PolicyGradient : Cloning DONE")
   self.delta=torch.Tensor(1,self.action_space.n):fill(1)
   
   self.feval = function(params_new)
@@ -53,7 +52,6 @@ function PolicyGradient:init()
     self.memory_reward_position=self.memory_reward_position+1
     if (self.memory_reward_position>self.memory_reward_size) then self.memory_reward_position=1 end    
     local avg_reward=self.memory_reward:mean()
-    print("AVG Reward = "..avg_reward.." pour "..self.memory_reward:size(1))
     sum_reward=torch.Tensor(1):fill(self.reward_trajectory-avg_reward)
     
     for t=1,self.trajectory:get_number_of_observations()-1 do
@@ -89,7 +87,6 @@ function PolicyGradient:sample()
 end
 
 function PolicyGradient:end_episode(feedback)
-  ---- Launch the gradient optimization method
   self.reward_trajectory=feedback*self.scaling_reward  
   local _,fs=self.optim(self.feval,self.params,self.optim_params) 
 end

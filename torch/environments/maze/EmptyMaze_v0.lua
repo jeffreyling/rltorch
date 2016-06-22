@@ -1,7 +1,8 @@
 local EmptyMaze_v0 = torch.class('rltorch.EmptyMaze_v0','rltorch.Environment'); 
   
  
---- Initialize the environment
+--- Empty maze with an initial position, and a goal
+
 function EmptyMaze_v0:__init(size_x,size_y,start_x,start_y,goal_x,goal_y)
   self.size_x=size_x
   self.size_y=size_y
@@ -29,10 +30,6 @@ function EmptyMaze_v0:__init(size_x,size_y,start_x,start_y,goal_x,goal_y)
   self.observation_space = rltorch.Box(vlow,vhigh)
 end
  
----Update the environment given that one agent has chosen one action
--- @params agent_action the action of the agent
--- @returns observation,reward,done,info
---- Here action is 1 2 or 3
 function EmptyMaze_v0:step(agent_action)  
   local x=self.state[1]
   local y=self.state[2]
@@ -62,19 +59,14 @@ function EmptyMaze_v0:step(agent_action)
   return {self.state,reward,done}
 end
 
----- Returns the initial domain 
--- @return the action domain
 function EmptyMaze_v0:reset()
    self.state = torch.Tensor({self.start_x,self.start_y})
    return(self.state)
 end 
 
---- Tells if we are in a terminal state or not
-function EmptyMaze_v0:close()
-  
+function EmptyMaze_v0:close()  
 end
 
---- Clone the environment
 function EmptyMaze_v0:render(arg)
   if (arg.mode=="console") then
     print("Position = "..self.state[1].." ; "..self.state[2])

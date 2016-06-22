@@ -2,7 +2,7 @@
  
 local TilingSensor2D = torch.class('rltorch.TilingSensor2D','rltorch.Sensor'); 
 
---- Discretize each input dimension considering a particular number of buckets
+--- Discretize each input dimension considering a particular number of buckets. It works for 2D observations (e.g MountainCar)
 function TilingSensor2D:__init(observation_space,nb_buckets_dim_1,nb_buckets_dim_2)
   rltorch.Sensor.__init(self,observation_space)
   self.n1=nb_buckets_dim_1

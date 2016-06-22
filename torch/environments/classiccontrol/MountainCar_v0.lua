@@ -1,8 +1,7 @@
 
 local MountainCar_v0 = torch.class('rltorch.MountainCar_v0','rltorch.Environment'); 
   
- 
---- Initialize the environment
+
 function MountainCar_v0:__init()
   self.min_position = -1.2
   self.max_position = 0.6
@@ -17,10 +16,7 @@ function MountainCar_v0:__init()
   self.observation_space = rltorch.Box(self.low, self.high)
 end
  
----Update the environment given that one agent has chosen one action
--- @params agent_action the action of the agent
--- @returns observation,reward,done,info
---- Here action is 1 2 or 3
+
 function MountainCar_v0:step(agent_action)  
   local position=self.state[1]
   local velocity=self.state[2]
@@ -40,16 +36,14 @@ function MountainCar_v0:step(agent_action)
   return {self.state,reward,done}
 end
 
----- Returns the initial domain 
--- @return the action domain
+
 function MountainCar_v0:reset()
    self.state = torch.Tensor({math.random()*(-0.4+0.6)-0.4, math.random()*(2*self.max_speed)-self.max_speed})
    return(self.state)
 end 
 
---- Tells if we are in a terminal state or not
+
 function MountainCar_v0:close()
-  
 end
 
 
@@ -57,7 +51,6 @@ function MountainCar_v0:_height(xs)
   return math.sin(3 * xs)*0.45
 end
 
---- Clone the environment
 function MountainCar_v0:render(arg)
   if (arg.mode=="console") then
     print("Position = "..self.state[1].." / Speed = "..self.state[2])

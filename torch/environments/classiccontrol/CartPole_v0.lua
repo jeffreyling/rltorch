@@ -2,7 +2,6 @@
 local CartPole_v0 = torch.class('rltorch.CartPole_v0','rltorch.Environment'); 
   
  
---- Initialize the environment
 function CartPole_v0:__init()
         self.gravity = 9.8
         self.masscart = 1.0
@@ -23,10 +22,6 @@ function CartPole_v0:__init()
         self.observation_space = rltorch.Box(-high, high)
 end
  
----Update the environment given that one agent has chosen one action
--- @params agent_action the action of the agent
--- @returns observation,reward,done,info
---- Here action is 1 2 or 3
 function CartPole_v0:step(agent_action)  
         local action = agent_action
         assert(action==1 or action==2, "Invalid action")
@@ -76,8 +71,7 @@ function CartPole_v0:step(agent_action)
         return {self.state, reward, done} 
 end
 
----- Returns the initial domain 
--- @return the action domain
+
 function CartPole_v0:reset()
     self.state = torch.rand(4)*0.1-torch.Tensor(4):fill(-0.05)
     self.steps_beyond_done = nil
@@ -85,10 +79,8 @@ function CartPole_v0:reset()
 end 
 
 function CartPole_v0:close()
-  
 end
 
---- Clone the environment
 function CartPole_v0:render(arg)
   if (arg.mode=="console") then
     print("Position = "..self.state[1].." / Vitesse = "..self.state[2].." // Angle "..self.state[3].." // Vitesse Angulaire "..self.state[4])
