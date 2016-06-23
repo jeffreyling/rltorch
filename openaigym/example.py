@@ -1,6 +1,9 @@
 import gym
 import lutorpy as lua
 
+#Example of policy gradient (see the torch tutorials)
+
+
 require('rltorch') 
 require('nn')
 require('dpnn')
@@ -41,8 +44,7 @@ for i_episode in range(NB_TRAJECTORIES):
     for t in range(MAX_LENGTH):
         #env.render()
         action = policy._sample()
-        action=action-1
-        #env.action_space.sample()
+        action=action-1  #Change the index from LUA to Python
         observation, reward, done, info = env.step(action)
         total_reward=total_reward+reward*current_discount
         current_discount=current_discount*DISCOUNT_FACTOR
