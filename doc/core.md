@@ -1,10 +1,10 @@
- # Core Classes #
+ # Core Classes
 
 The rltorch package is based on a few main classes.
-* Environment: It describes the environement. Note that the environment also include the sampling of the initial state
+* Environment: It describes the environment. Note that the environment also includes the sampling of the initial state
 * Policy: It describes a policy (or agent) interacting with the environment
-* Sensor: The sensor class aims at transforming observations (e.g states) coming from the environment to a policy. It allows to propose different views upon a same environment
-* Space: This class describes spaces (for example discrete space, grid space, etc...) and is basically used to describe the action and observation space
+* Sensor: The sensor class aims at transforming observations (e.g states) coming from the environment to a policy. It allows one to test different views upon a same environment
+* Space: This class describes spaces (for example discrete space, grid space, etc...) and is basically used to describe the action and observation spaces
 * Trajectory: This class is used to store a complete trajectory in memory
 * Trajectories: This class is used to store a set of trajectories in memory 
 
@@ -16,9 +16,9 @@ The class is an abstract class used to implement new environments. An environmen
 
 It is composed of the following methods:
 * `__init(parameters)` : Initialization of a new enviroment. `parameters` is a table that contains the parameters of the environment. Note that the parameters are always stored in `self.parameters`
-* `(observation, reward, done, informations) step(agent_action)`: apply the `agent_action` to the environment and returns `(observation, reward, done, informations)`. `observation` is the new observation, `reward` is the feedback provided to the agent immediately after applyiong the action (if any). It is typically a scalar value (to maximize). `done` is true if the environment is in a final state. `informations` can be used to provide any other information to the agent (if needed)
-* `observation reset()` : It reset the environment by sampling a new initial state, and return the corresponding `observation`
-*  `close()` : can be used at the end of the process to free memory for example
+* `(observation, reward, done, informations) step(agent_action)`: It applies the `agent_action` to the environment and returns `(observation, reward, done, informations)`. `observation` is the new observation, `reward` is the feedback provided to the agent immediately after applying the action (if any). It is typically a scalar value (to maximize). `done` is true if the environment is in a final state. `informations` can be used to provide any other information to the agent (if needed)
+* `observation reset()` : It resets the environment by sampling a new initial state, and returns the corresponding `observation`
+*  `close()` : can be used at the end of the process to free the memory for example
 * `render(...)`: can be used to visualize the state of the environment 
 
 Note that the observation provided by the environment is updated through the `step` method, and thus has to be copied by the agent if it wants to keep memory of the trajectory
@@ -28,12 +28,12 @@ Note that the observation provided by the environment is updated through the `st
 This class describes an agent actiong in an environment. It is based on a `Sensor` (see below). It correponds to `P(a_t | sensor(o_t))` where `sensor(o_t)` is the observation of the environment throught the sensor. 
 
 The methods are:
-* `__init(observation_space,action_space,sensor)`: initialize the policy (given a particular sensor if needed)
+* `__init(observation_space,action_space,sensor)`: It initializes the policy (given a particular sensor if needed)
 * `new_episode(initial_observation,informations)`: must be called at the begining of a trajectory (just after the Environment:reset() function). Note that `informations` can be used to give external information to the policy.
 * `observe(observation)`: must be called before sampling a new action
-* `sample()`: sample an action given the last observed observation.
-* `feedback(reward)`: provide feedback (can be a scalar or any other structure depending on the nature of the policy) corresponding to the last sampled action
-* `end_episode(feedback)`: must be called at the end of a trajectory. `feeedback` corresponds to the feedback provided for the whole trajectory (e.g the total reward when using the policy gradient algorithm)
+* `sample()`: It samples an action given the last observed observation.
+* `feedback(reward)`: It provides feedback (can be a scalar or any other structure depending on the nature of the policy) corresponding to the last sampled action
+* `end_episode(feedback)`: must be called at the end of a trajectory. `feedback` corresponds to the feedback provided for the whole trajectory (e.g the total reward when using the policy gradient algorithm)
 
 
 # Sensor

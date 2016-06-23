@@ -10,7 +10,7 @@ It transforms a `(n)` torch Tensor to a `(1,n)` tensor.
 
 It is a special sensor for the Atari environment. It:
 * rescales the Atari images to `width,height`
-* it (potentially) transform the image to a grayscale image
+* it (potentially) transforms the image to a grayscale image
 * the final image is provided to the policy as a `(1,n)` vector
 
 NOTE: This sensor cannot be used in openai Gym since the Atari environment in openai gym does not use the same observation format than the Atari environment used in this package
