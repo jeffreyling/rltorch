@@ -28,8 +28,16 @@ For using openAI Gym:
 * Install [lutorpy](https://github.com/imodpasteur/lutorpy) and [OpenAI Gym](https://gym.openai.com/)
 * lauch the python script (example.py)
 
+# Documentation
 
-WARNING : If you use an openAI Gym ATARI environment, a new sensor must be developed: it will be avaiable in the next few days (since openAI and alewrap do not store the ATARI images in the same format)
+The package if composed of these different elements:
+* [Core](doc/core.md): the core classes
+* [Sensors](doc/sensors.md): the different sensors
+* [Policies](doc/policies.md): different (learning) policies
+* [Environments](doc/environments.md): different environments
+
+The interface with the open AI Gym package is explained [Here](doc/openai.md)
+
 
 Author: Ludovic DENOYER
 
