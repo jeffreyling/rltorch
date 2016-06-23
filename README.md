@@ -8,12 +8,18 @@ Tutorials are provided in the tutorials directory
 Lua: 
 * Torch7
 * nn, dpnn
-* logroll, json
+* logroll, json, alewrap
 
 For using openAI Gym:
 * openai gym
 * lutorpy
 
+# Installation
+
+In the torch directory: luarocks make
+Install lutorpy and open AI
+lauch the python script (example.py)
+WARNING : If you use an openAI Gym ATARI environment, a new sensor must be developped: it will be avaiable in the next few days (since openAI and alewrap do not store the ATARI images in the same format)
 
 Author: Ludovic DENOYER
 
