@@ -38,6 +38,8 @@ The package if composed of these different elements:
 
 The interface with the open AI Gym package is explained [Here](doc/openai.md)
 
+The tutorials are explained here: [Tutorials](doc/tutorials.md)
+
 [TODO](TODO.md) : What will happen next
 
 Author: Ludovic DENOYER
