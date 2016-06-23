@@ -110,10 +110,12 @@ local arguments={
 ```
 
   * You have to provide the optimization algorithm and its parameters:
+```lua
     optim=optim.adam,
     optim_params= {
         learningRate =  0.01  
       },
+```
 
   * The reward considered by the policy will be the original reward divided by 10 (just to provide an example)
 
@@ -159,8 +161,42 @@ for i=1,NB_TRAJECTORIES do
 env:close()
 ```
 
+# Tutorial Deep Q-Learning (but the DeepQPolicy code must be checked...)
 
+This is the same idea.... The only different is in the way the policy is built
 
+```lua
+env = rltorch.CartPole_v0()
+sensor=rltorch.BatchVectorSensor(env.observation_space)
+
+local size_input=sensor:size()
+local nb_actions=env.action_space.n
+```
+
+* The module is here a simple `nn` module (no need to used `dpnn` stuffs)
+
+```lua
+module_policy=nn.Sequential():add(nn.Linear(size_input,size_input*2)):add(nn.Tanh()):add(nn.Linear(size_input*2,nb_actions))
+module_policy:reset(0.01)
+
+local arguments={
+    policy_module = module_policy,
+    max_trajectory_size = MAX_LENGTH,
+    optim=optim.adam,
+    optim_params= {
+        learningRate =  0.01  
+      },
+    scaling_reward=1.0,
+    size_minibatch=10,
+    size_memory=100,
+    discount_factor=1,
+    epsilon_greedy=0.1
+  }
+  
+policy=rltorch.DeepQPolicy(env.observation_space,env.action_space,sensor,arguments)
+```
+
+The following is the same. Note that, here, the feedback that is used is the feedback provided through the `policy:observe(...)` method. 
 
 
 
