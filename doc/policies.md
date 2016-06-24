@@ -19,6 +19,17 @@ Optionnal parameters:
 * `size_memory_for_bias`: the number of trajectories used for computing the average reward obtained by the policy. This average value is used in the reinforce algorithm and substracted to the total observed reward.
 * `scaling_reward`: the scaling factor for the received reward
 
+# RecurrentPolicyGradient
+(see tutorials/t5_recurrentpolicygradient.lua)
+
+This class provides an implementation of the REINFORCE algorithm using recurrent neural network. The principle is the following:
+* The neural network involves a `N` dimensionnal latent space
+* At the begining of a neuw trajectory, the network state is `z_0` which is proided by the user when creating the policy
+* Given the first observation, the state `z_1` is computed using the `initial_recurrent_module` which transforms a {(1,N,(1,O)} pair of tensors to a (1,N) tensor where `O` is the size of the observation space (after processing by the sensor)
+* Then, for each timestep `t`, the action `a_t` is sampled by using the `policy_module` applied on `z_t`. The `policy_module` is based on the `dpnn` package using the reinforced modules
+* The next state `z_{t+1}` is computed based on the chosen action and the obtained observation through the `recurrent_module[a_t]` which takes as an input a `{(1,N),(1,O)}` pair of tensors and computes `z_{t+1}`
+
+
 # DeepQPolicy
  (see `tutorials/t4_deepqlearning.lua`)
 

@@ -198,5 +198,72 @@ policy=rltorch.DeepQPolicy(env.observation_space,env.action_space,sensor,argumen
 
 The following is the same. Note that, here, the feedback that is used is the feedback provided through the `policy:observe(...)` method. 
 
+# Tutorial 4: The recurrent policy gradient
+
+First, as usual, you have to build the environment, sensor, etc...
+
+```lua
+env = rltorch.CartPole_v0() 
+math.randomseed(os.time())
+sensor=rltorch.BatchVectorSensor(env.observation_space)
+
+local size_input=sensor:size()
+local nb_actions=env.action_space.n
+```
+
+Then, choose the size of the latent space
+```lua
+local N=10
+```
+
+Choose the value of the initial state
+
+```lua
+local initial_state=torch.Tensor(1,N):fill(0)
+```
+
+Build the three needed modules
+* The module that samples an action (linear->softmax->multinomial) from the latent space
+
+```lua
+local module_policy=nn.Sequential():add(nn.Linear(N,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical()); module_policy:reset(STDV)
+```
+* The module that computes the first latent space given the first observation of any new trajectory
+```lua
+local initial_recurrent_module = rltorch.RNN():rnn_cell(size_input,N,N); initial_recurrent_module:reset(STDV)
+```
+
+* The modules that computes the next state given the newly acquired observation (one module for each possible action)
+```lua
+local recurrent_modules={}
+for a=1,nb_actions do
+  recurrent_modules[a]=rltorch.GRU():gru_cell(size_input,N)
+  recurrent_modules[a]:reset(STDV)
+end
+```
+
+Then, we build the policy:
+```lua
+local arguments={
+    policy_module = module_policy,
+    initial_state = initial_state,
+    N = N,
+    initial_recurrent_module = initial_recurrent_module,
+    recurrent_modules = recurrent_modules,
+    max_trajectory_size = MAX_LENGTH,
+    optim=optim.adam,
+    optim_params= {
+        learningRate =  0.001  
+      },
+    scaling_reward=1.0/MAX_LENGTH,
+    size_memory_for_bias=100
+  }
+  
+policy=rltorch.RecurrentPolicyGradient(env.observation_space,env.action_space,sensor,arguments)
+```
+And then, you can use this policy. WARNING, when facing very long trajectories, you will face some gradients problem (gradient clipping is not implemented in the policy for now)
+
+
+
 
 
