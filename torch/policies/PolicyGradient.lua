@@ -52,7 +52,8 @@ function PolicyGradient:init()
     self.memory_reward_position=self.memory_reward_position+1
     if (self.memory_reward_position>self.memory_reward_size) then self.memory_reward_position=1 end    
     local avg_reward=self.memory_reward:mean()
-    sum_reward=torch.Tensor(1):fill(self.reward_trajectory-avg_reward)
+    print("AVG REWARD = "..avg_reward)
+    local sum_reward=torch.Tensor(1):fill(self.reward_trajectory-avg_reward)
     
     for t=1,self.trajectory:get_number_of_observations()-1 do
       local out=self.modules[t].output

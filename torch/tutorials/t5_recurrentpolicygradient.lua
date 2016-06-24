@@ -1,12 +1,12 @@
 require ('optim') 
 require('rltorch')
 
-MAX_LENGTH=1000
+MAX_LENGTH=100
 DISCOUNT_FACTOR=1.0
 NB_TRAJECTORIES=10000
 
 --env = rltorch.MountainCar_v0()
-env = rltorch.CartPole_v0()
+env = rltorch.CartPole_v0() 
 math.randomseed(os.time())
 --env = rltorch.EmptyMaze_v0(10,10)
 sensor=rltorch.BatchVectorSensor(env.observation_space)
@@ -15,25 +15,42 @@ sensor=rltorch.BatchVectorSensor(env.observation_space)
 local size_input=sensor:size()
 local nb_actions=env.action_space.n
 
--- Creating the policy module
-local module_policy=nn.Sequential():add(nn.Linear(size_input,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical())
---local module_policy=nn.Sequential():add(nn.Linear(size_input,nb_actions*2)):add(nn.Tanh()):add(nn.Linear(nb_actions*2,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical())
-module_policy:reset(0.01)
 
+local N=10 -- the size of the latent space
+local STDV=0.01
+-- Creating the policy module which maps the latent space to the action space
+local module_policy=nn.Sequential():add(nn.Linear(N,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical()); module_policy:reset(STDV)
+
+-- the initial state in the latent space
+local initial_state=torch.Tensor(1,N):fill(0)
+
+-- This module  maps the initial state + initial observation to a new state in the latent space
+local initial_recurrent_module = rltorch.RNN():rnn_cell(size_input,N,N); initial_recurrent_module:reset(STDV)
+
+-- Now we define one module for each possibl action. Each module maps the current state + new observation to a new state
+local recurrent_modules={}
+for a=1,nb_actions do
+  recurrent_modules[a]=rltorch.GRU():gru_cell(size_input,N)
+  recurrent_modules[a]:reset(STDV)
+end
 
 
 local arguments={
     policy_module = module_policy,
+    initial_state = initial_state,
+    N = N,
+    initial_recurrent_module = initial_recurrent_module,
+    recurrent_modules = recurrent_modules,
     max_trajectory_size = MAX_LENGTH,
     optim=optim.adam,
     optim_params= {
-        learningRate =  0.01  
+        learningRate =  0.001  
       },
     scaling_reward=1.0/MAX_LENGTH,
     size_memory_for_bias=100
   }
   
-policy=rltorch.PolicyGradient(env.observation_space,env.action_space,sensor,arguments)
+policy=rltorch.RecurrentPolicyGradient(env.observation_space,env.action_space,sensor,arguments)
 
 local rewards={}
 for i=1,NB_TRAJECTORIES do
@@ -57,7 +74,7 @@ for i=1,NB_TRAJECTORIES do
     
     rewards[i]=sum_reward
     print("Reward at "..i.." is "..sum_reward)
-    if (i%100==0) then gnuplot.plot(torch.Tensor(rewards),"|") end
+    if (i%10==0) then gnuplot.plot(torch.Tensor(rewards),"|") end
     
     policy:end_episode(sum_reward) -- The feedback provided for the whole episode here is the discounted sum of rewards      
 end
