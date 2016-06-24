@@ -89,7 +89,7 @@ local size_input=sensor:size()
 local nb_actions=env.action_space.n
 ```
 
-* Build a dpnn module which will sample one action over the possible actions. The input of this module is the (1,n) vector provided by the sensor, and the output is a (1,A) onehot vector with a 1 for the chosen action. This module must implements the `reinforce` method provided in the `dpnn` package. The module used here is a linear module with a softmax and a multinomial sampling
+* Build a dpnn module which will samples one action over the possible actions. The input of this module is the (1,n) vector provided by the sensor, and the output is a (1,A) onehot vector with a 1 for the chosen action. This module must implement the `reinforce` method provided in the `dpnn` package. The module used here is a linear module with a softmax and a multinomial sampling
 
 ```lua
 local module_policy=nn.Sequential():add(nn.Linear(size_input,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical())
@@ -103,7 +103,7 @@ local arguments={
     policy_module = module_policy,
 ```
 
-  * For the `PolicyGradient` classe, you must provide the maximum size of the trajectories (`MAX_LENGTH` here)
+  * For the `PolicyGradient` class, you must provide the maximum size of the trajectories (`MAX_LENGTH` here)
 
 ```lua
     max_trajectory_size = MAX_LENGTH,
