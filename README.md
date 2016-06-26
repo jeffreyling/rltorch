@@ -42,9 +42,32 @@ The interface with the open AI Gym package is explained [Here](doc/openai.md)
 
 The tutorials are avaialbe here: [Tutorials](doc/tutorials.md)
 
+# FAQ
+
+1. When installing Lutorpy, Luajit is not being detected.
+
+Check that pkg-config can find luajit. The following should return at least one result:
+
+```
+pkg-config --list-all | grep luajit
+```
+
+If there are no results, then your `.pc` file for luajit is probably not in the right place. Try something like the following:
+
+```
+ln -s /path/to/torch/exe/luajit-rocks/luajit-2.0/etc/luajit.pc /usr/local/lib/pkgconfig/luajit.pc
+```
+
+2. Exception related to no display, such as `pyglet.canvas.xlib.NoSuchDisplayException: Cannot connect to "None"`.
+
+OpenAI Gym needs some sort of display to record results. On ubuntu, you may try to install xvfb/asciinema. Then try running example.py like so:
+
+```
+xvfb-run -s "-screen 0 1400x900x24" python example.py
+```
+
 # Other Information
 
 [TODO](TODO.md) : What will happen next
 
 Author: Ludovic DENOYER
-
