@@ -161,7 +161,7 @@ for i=1,NB_TRAJECTORIES do
 env:close()
 ```
 
-# Tutorial Deep Q-Learning (but the DeepQPolicy code must be checked...)
+# Tutorial 4: Deep Q-Learning 
 
 This is the same idea.... The only different is in the way the policy is built
 
@@ -198,7 +198,7 @@ policy=rltorch.DeepQPolicy(env.observation_space,env.action_space,sensor,argumen
 
 The following is the same. Note that, here, the feedback that is used is the feedback provided through the `policy:observe(...)` method. 
 
-# Tutorial 4: The recurrent policy gradient
+# Tutorial 5 : The recurrent policy gradient
 
 First, as usual, you have to build the environment, sensor, etc...
 

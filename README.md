@@ -75,4 +75,4 @@ xvfb-run -s "-screen 0 1400x900x24" python example.py
 
 [TODO](TODO.md) : What will happen next
 
-Author: Ludovic DENOYER
+Author: Ludovic DENOYER -- The code is provided as if, some bugs may exist.....
