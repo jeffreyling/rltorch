@@ -35,6 +35,9 @@ The package if composed of these different elements:
 * [Sensors](doc/sensors.md): the different sensors
 * [Policies](doc/policies.md): different (learning) policies
 * [Environments](doc/environments.md): different environments
+  * [Classic Control Tasks](doc/env_classiccontrol.md): Classic control tasks
+  * [Atari](doc/env_atari.md): Atari environments
+  * [Classic Machine Learning](doc/env_classicmachinelearning.md): We also provide some environments that correspond to classical machine learning problems seen as RL environments (multiclass classification for now, one shot learning and structured output prediction for the future)
 
 The interface with the open AI Gym package is explained [Here](doc/openai.md)
 

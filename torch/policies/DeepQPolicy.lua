@@ -147,7 +147,7 @@ function DeepQPolicy:end_episode(feedback)
   self.memory[self.last_memory_position].done=true
 
   if (self.memory_size==self.arguments.size_memory) then
-    local _,fs=self.optim(self.feval,self.params,self.optim_params)
+    if (self.train) then local _,fs=self.optim(self.feval,self.params,self.optim_params) end
   end  
 
 

@@ -21,6 +21,8 @@ include('CartPole_v0.lua')
 include('Atari_v0.lua')
 include('Atari_Breakout_v0.lua')
 
+include('MulticlassClassification_v0.lua')
+
 include('EmptyMaze_v0.lua')
 
 include('Policy.lua')

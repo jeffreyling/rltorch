@@ -1,20 +1,8 @@
 #Environments #
 
-Different environments are provided
+Different environments are provided by the platform in different families:
+* [Classic Control Tasks](env_classiccontrol.md): Classic control tasks
+* [Atari](env_atari.md): Atari environments
+* [Classic Machine Learning](env_classicmachinelearning.md): We also provide some environments that correspond to classical machine learning problems seen as RL environments (classification, one shot learning, structured output prediction, ...)
 
-# MountainCar_v0
-
-The moutain car environment (same than openAI Gym)
-
-# CartPole_v0
-
-The cart pole environment (same than openAI Gym)
-
-# Atari_v0
-
-The Atari environment with 18 actions
-
-# Atari_Breakout_v0
-
-The same thing but actions are limited to actions 2,4,5 (for the breakout game)
 

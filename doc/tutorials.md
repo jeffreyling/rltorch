@@ -263,6 +263,116 @@ policy=rltorch.RecurrentPolicyGradient(env.observation_space,env.action_space,se
 ```
 And then, you can use this policy. WARNING, when facing very long trajectories, you will face some gradients problem (gradient clipping is not implemented in the policy for now)
 
+# Tutorial 6 : Multiclass Classification as a 0/1 RL problem
+
+Here we explain how a classical multiclass classification problem can be casted to a 0/1 reward problem: 
+
+First, we load the dataset from a `libsvm` file
+
+```lua
+--- First: load the data from a libsvm files and create the right tensors
+local PROPORTION_TRAIN=0.5
+local data = svm.ascread('breast-cancer_scale')
+local training_examples, training_labels,testing_examples,testing_labels = unpack(generateTrainTest(data,PROPORTION_TRAIN))
+```
+
+Next, we create the corresponding environment
+
+```lua
+local parameters={}
+parameters.training_examples=training_examples
+parameters.training_labels=training_labels
+parameters.testing_examples=testing_examples
+parameters.testing_labels=testing_labels
+parameters.zero_one_reward=true
+
+env = rltorch.MulticlassClassification_v0(parameters)
+```
+
+The followuing is very close to what we have made previously. The only difference is that we will evaluate the quality of the policy (classifier) on the testing examples at each iteration. 
+
+Creation of the policy
+
+```lua 
+sensor=rltorch.BatchVectorSensor(env.observation_space)
+--sensor=rltorch.TilingSensor2D(env.observation_space,30,30)
+
+local size_input=sensor:size()
+local nb_actions=env.action_space.n
+print(env.action_space)
+print(env.action_space.n)
+print("Size input = "..size_input)
+print("Nb_actions = "..nb_actions)
+-- Creating the policy module
+local module_policy=nn.Sequential():add(nn.Linear(size_input,nb_actions)):add(nn.SoftMax()):add(nn.ReinforceCategorical())
+module_policy:reset(0.01)
+
+local arguments={
+    policy_module = module_policy,
+    max_trajectory_size = SIZE_ITERATION,
+    optim=optim.adam,
+    optim_params= {
+        learningRate =  0.01  
+      },
+    scaling_reward=1.0,
+    size_memory_for_bias=100
+  }
+  
+policy=rltorch.PolicyGradient(env.observation_space,env.action_space,sensor,arguments)
+```
+
+The main loop:
+
+```lua
+local train_rewards={}
+local test_rewards={}
+for i=1,NB_ITERATIONS do
+```
+
+*  Evaluation on the testing set (without learning the policy)
+```lua
+ --- Evaluation on the test set
+    policy.train=false
+    policy:new_episode(env:reset(true))  
+    
+    local sum_reward_test=0.0
+    local flag=true 
+    while(flag) do  
+      env:render{mode="nothing"}      
+      local action=policy:sample()      
+      local observation,reward,done,info=unpack(env:step(action))    
+      sum_reward_test=sum_reward_test+reward -- comptues the discounted sum of rewards
+      --print(reward)
+      if (done) then flag=false else policy:observe(observation) end       
+    end
+    test_rewards[i]=sum_reward_test/parameters.testing_examples:size(1)
+    print("0/1 Reward at iteration "..i.." (test) is "..sum_reward_test)  
+```
+
+* Evaluation (and learning) over a sample of training examples
+
+```lua
+-- Evaluation + training on training examples
+    policy.train=true
+    policy:new_episode(env:reset())  
+    local sum_reward=0.0
+    
+    for t=1,SIZE_ITERATION do  
+      env:render{mode="nothing"}      
+      local action=policy:sample()      
+      local observation,reward,done,info=unpack(env:step(action))    
+      policy:feedback(reward) -- the immediate reward is provided to the policy
+      policy:observe(observation)      
+      sum_reward=sum_reward+reward -- comptues the discounted sum of rewards
+      if (done) then        
+        break
+      end
+    end
+    
+    train_rewards[i]=sum_reward/SIZE_ITERATION
+```
+ Don't forget to close the loop... (see `t6_multiclass_classification.lua`)
+
 
 
 

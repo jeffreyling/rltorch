@@ -120,7 +120,7 @@ end
 
 function RecurrentPolicyGradient:end_episode(feedback)
   self.reward_trajectory=feedback*self.scaling_reward  
-  local _,fs=self.optim(self.feval,self.params,self.optim_params) 
+  if (self.train) then  local _,fs=self.optim(self.feval,self.params,self.optim_params)  end
 end
 
  
