@@ -39,6 +39,8 @@ The package if composed of these different elements:
   * [Atari](doc/env_atari.md): Atari environments
   * [Classic Machine Learning](doc/env_classicmachinelearning.md): We also provide some environments that correspond to classical machine learning problems seen as RL environments (multiclass classification for now, one shot learning and structured output prediction for the future)
 
+# OpenAI Gym
+
 The interface with the open AI Gym package is explained [Here](doc/openai.md)
 
 # Tutorials
