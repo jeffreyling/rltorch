@@ -1,4 +1,6 @@
-local RLTools = torch.class('rltorch.RLTools','rltorch.Environment'); 
+--- This class implements a set of tools for (easy) RL experiments
+
+local RLTools = torch.class('rltorch.RLTools'); 
    
 --- This function launches nb_trajectories trajectories and save the total discounted reward + trajectories lengths in a log (see tutorials/t2_policygradient_bis.lua)
 ----- policy : the policy

@@ -5,50 +5,6 @@ require ('optim')
 require('rltorch')
 require('svm')
 
-function generateTrainTest(data,ptrain)
-  local nb_examples=#data
-  local train_or_test={}
-  local index_categories={}
-  local nb_cat=0
-  local max_feature_index=0
-  local nb_train=0
-  local nb_test=0
-  for i=1,nb_examples do
-    if (math.random()<ptrain) then train_or_test[i]="train" nb_train=nb_train+1 else train_or_test[i]="test"; nb_test=nb_test+1 end
-    local vf,mf=data[i][2][1]:max(1)
-    if (vf[1]>max_feature_index) then max_feature_index=vf[1] end
-    
-    local cat=data[i][1]
-    if (index_categories[cat]==nil) then
-      index_categories[cat]=nb_cat+1 
-      nb_cat=nb_cat+1
-    end    
-  end
-  
-  local training_examples=torch.Tensor(nb_train,max_feature_index):fill(0)
-  local training_labels=torch.Tensor(nb_train,1):fill(0)
-  local testing_examples=torch.Tensor(nb_test,max_feature_index):fill(0)
-  local testing_labels=torch.Tensor(nb_test,1):fill(0)
-  
-  local pos_train=1
-  local pos_test=1
-  for i=1,nb_examples do
-    local i_f=data[i][2][1]
-    local v_f=data[i][2][2]
-    if (train_or_test[i]=="train") then
-      for k=1,i_f:size(1) do training_examples[pos_train][i_f[k]]=v_f[k] end
-      training_labels[pos_train]=index_categories[data[i][1]]
-      pos_train=pos_train+1
-    else
-      for k=1,i_f:size(1) do testing_examples[pos_test][i_f[k]]=v_f[k] end
-      testing_labels[pos_test]=index_categories[data[i][1]]
-      pos_test=pos_test+1
-    end
-  end
-  print("Number of categories is "..nb_cat)   
-  return {training_examples,training_labels,testing_examples,testing_labels}   
-end
-
 math.randomseed(os.time())
 
 
@@ -56,17 +12,10 @@ local NB_ITERATIONS=1000 -- The number of trajectories
 local SIZE_ITERATION=1000 -- The number of training example to sample for each trajectory
 
 
---- First: load the data from a libsvm files and create the right tensors
 local PROPORTION_TRAIN=0.5
-local data = svm.ascread('datasets/breast-cancer_scale')
-local training_examples, training_labels,testing_examples,testing_labels = unpack(generateTrainTest(data,PROPORTION_TRAIN))
-
+local data,labels = unpack(rltorch.RLFile():read_libsvm('datasets/breast-cancer_scale'))
 local parameters={}
-parameters.training_examples=training_examples
-parameters.training_labels=training_labels
-parameters.testing_examples=testing_examples
-parameters.testing_labels=testing_labels
-parameters.zero_one_reward=true
+parameters.training_examples, parameters.training_labels,parameters.testing_examples,parameters.testing_labels = unpack(rltorch.RLFile():split_train_test(data,labels,PROPORTION_TRAIN))
 
 env = rltorch.MulticlassClassification_v0(parameters)
 sensor=rltorch.BatchVectorSensor(env.observation_space)

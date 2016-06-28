@@ -10,12 +10,10 @@ local MulticlassClassification_v0 = torch.class('rltorch.MulticlassClassificatio
 ----- training_labels : a (N x 1) tensor, where each value corresponds to the true label of each example
 ----- testing_examples (optionnal) : a (N' x n) tensor where N' is the number of testing examples. If (self.test==true) then the environment will generate a trajectory of all the testing examples.
 ----- testing_labels (optionnal) : corresponding labels
------ zero_one_reward : if true, the environment returns a zero/one reward at each timestep; it returns the true category elsewhere
 function MulticlassClassification_v0:__init(parameters)        
         self.parameters=parameters        
         assert(self.parameters.training_examples~=nil)
         assert(self.parameters.training_labels~=nil)
-        assert(self.parameters.zero_one_reward~=nil) 
         local vmax,imax=self.parameters.training_labels:max(1)
         self.action_space = rltorch.Discrete(vmax[1][1])
         self.n=self.parameters.training_examples:size(2)
@@ -26,30 +24,30 @@ function MulticlassClassification_v0:__init(parameters)
         self.test=false
 end
  
+--- the 4-th element of the return contains the true category of the last example. The reward is a zero/one reward
 function MulticlassClassification_v0:step(agent_action)  
   --- TESTING MODE
         if (self.test) then          
           local true_category=self.parameters.testing_labels[self.last_index][1]
           
-          local feedback=true_category
-          if (self.parameters.zero_one_reward) then 
-            if (true_category==agent_action) then feedback=1 else feedback=0 end
-          end
+          local feedback={true_action=true_category}
+          local reward=0          
+          if (true_category==agent_action) then reward=1 end
           
           self.last_index=self.last_index+1
           if (self.last_index>self.parameters.testing_examples:size(1)) then 
-            return {nil,feedback,true}
+            return {nil,reward,true,feedback}
           else
-            return {self.parameters.testing_examples[self.last_index],feedback,false}
+            return {self.parameters.testing_examples[self.last_index],reward,false,feedback}
           end
         else ---- TRAINING MODEL
           local true_category=self.parameters.training_labels[self.last_index][1]
-          local feedback=true_category
-           if (self.parameters.zero_one_reward) then 
-            if (true_category==agent_action) then feedback=1 else feedback=0 end
-          end 
+          local feedback={true_action=true_category}
+          local reward=0          
+          if (true_category==agent_action) then reward=1 end
+          
           self.last_index=math.random(self.n)
-          return {self.parameters.training_examples[self.last_index],feedback,false}
+          return {self.parameters.training_examples[self.last_index],reward,false,feedback}
         end
 end
 

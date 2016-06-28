@@ -3,6 +3,7 @@ rltorch={}
 
 include('Environment.lua')
 include('RLTools.lua')
+include('RLFile.lua')
 
 include('Trajectory.lua')
 include('Trajectories.lua')
@@ -32,6 +33,7 @@ include('RandomPolicy.lua')
 include('PolicyGradient.lua')
 include('DeepQPolicy.lua')
 include('RecurrentPolicyGradient.lua')
+include('StochasticGradientImitationPolicy.lua')
 
 include('ExperimentLog.lua')
 include('ExperimentLogCSV.lua')
