@@ -58,7 +58,7 @@ local SIZE_ITERATION=1000 -- The number of training example to sample for each t
 
 --- First: load the data from a libsvm files and create the right tensors
 local PROPORTION_TRAIN=0.5
-local data = svm.ascread('breast-cancer_scale')
+local data = svm.ascread('datasets/breast-cancer_scale')
 local training_examples, training_labels,testing_examples,testing_labels = unpack(generateTrainTest(data,PROPORTION_TRAIN))
 
 local parameters={}
