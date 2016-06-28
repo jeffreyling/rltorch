@@ -16,6 +16,7 @@ include('TilingSensor2D.lua')
 include('Space.lua')
 include('Discrete.lua')
 include('Box.lua')
+include('MultipleSpaces.lua')
 
 include('MountainCar_v0.lua')
 include('CartPole_v0.lua')
