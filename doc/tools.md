@@ -1,3 +1,4 @@
+# Different Tools 
 
 # Class RLTools
 
@@ -17,3 +18,17 @@ This function launches nb_trajectories trajectories and save the total discounte
   * `display_every` (optional) : display the reward evry n iterations
 
 The policy receives the immediate reward at each timestep, and the discounted sum of rewards at the end of the episode.
+
+
+# Class RLFile
+
+Different file tools.
+
+* `function RLFile:read_libsvm(filename)`
+Read a libsvm file and returns a matrix of data and a matrix of labels. Labels are reindexed
+
+* `function RLFile:split_train_test(data,labels,proportion_train)`
+It generates a split (train and test) over  data and labels matrices, giben a particular proportion to keep in train. 
+
+
+
