@@ -1,19 +1,33 @@
 
-This package is a basic Reinforcement Learning package written in LUA for Torch. It implements some simple environments and learning policies (Policy Gradient and Deep Q Learning). It also can be easily used with the OpenAI Gym package by using lutorpy (example given in the opeanaigym directory).
+This package is a Reinforcement Learning package written in LUA for Torch. It main features are (for now):
+* Different environments are provided, from classical RL environments, ATARI games, to special ones like the `multiclass classification environment` that casts a classification learning problem to a RL problem.
+* Different learning policies are provided:
+  * Classic reward-based policies: Policy gradient, recurrent policy gradient, approximated q-learning with experience replay (also known as deep Q learning)
+  * Imitation-based policies: Stochastic gradient-based imitation policy
+* The different policies can be easily used with `openAI Gym` directly in python by using the `lutorpy` package
 
-Tutorials are provided in the tutorials directory
+More features are planed:
+* New environments: 
+  * Text classification environment (sequential reading) as described in `Gabriel Dulac-Arnold, Ludovic Denoyer, Patrick Gallinari: Text Classification: A Sequential Reading Approach. ECIR 2011: 411-423`
+  * Image classification with attention as described in `Gabriel Dulac-Arnold, Ludovic Denoyer, Nicolas Thome, Matthieu Cord, Patrick Gallinari: Sequentially Generated Instance-Dependent Image Representations for Classification. ICLR 2014`   
+  * Budgeted Acquisition Environment as described in `Gabriel Dulac-Arnold, Ludovic Denoyer, Philippe Preux, Patrick Gallinari: Sequential approaches for learning datum-wise sparse representations. Machine Learning 89(1-2): 87-122 (2012)`
+  * ...
+* New learning policies
 
 # Dependencies
 
 Lua: 
 * [Torch7](http://torch.ch/docs/getting-started.html#_)
 * nn, dpnn
-* logroll, json, alewrap
+* logroll, json, alewrap, sys, paths, tds
 ```bash
 luarocks install nn
 luarocks install dpnn
 luarocks install logroll
 luarocks install json
+luarocks install sys
+luarocks install paths
+luarocks install tds
 git clone https://github.com/deepmind/xitari.git && cd xitari && luarocks make && cd .. && rm -rf xitari
 git clone https://github.com/deepmind/alewrap.git && cd alewrap && luarocks make && cd .. && rm -rf alewrap
 ```
@@ -71,9 +85,5 @@ OpenAI Gym needs some sort of display to record results. On ubuntu, you may try 
 ```
 xvfb-run -s "-screen 0 1400x900x24" python example.py
 ```
-
-# Other Information
-
-[TODO](TODO.md) : What will happen next
 
 Author: Ludovic DENOYER -- The code is provided as if, some bugs may exist.....
