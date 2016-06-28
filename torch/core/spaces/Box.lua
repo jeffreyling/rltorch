@@ -1,4 +1,4 @@
- 
+  
  --- Describe a sequential environment with one or many agents
 local Box = torch.class('rltorch.Box','rltorch.Space'); 
  

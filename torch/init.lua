@@ -2,6 +2,7 @@ require 'torch'
 rltorch={}
 
 include('Environment.lua')
+include('RLTools.lua')
 
 include('Trajectory.lua')
 include('Trajectories.lua')
