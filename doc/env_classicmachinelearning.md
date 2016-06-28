@@ -1,7 +1,7 @@
 # MulticlassClassification_v0
 (see t6_multiclass_classification.lua)
 
-This environment simulate a classical iterative training procedure for multiclass classification problems where one provides a training and testing set. 
+This environment simulates a classical iterative training procedure for multiclass classification problems where one provides a training and testing set. At each timestep, the agent receive a new data point. It then has to predict the category of this point (action). As a feedback, the agent receives either a 0/1 reward, or the true category (depending on the `zero_one_reward` flag).
 
 When initializing the environment, you have to provide the following parameters:
 * `training_examples` is a (n x N) matrix where n is the number of training examples, and N the dimension of the input space
