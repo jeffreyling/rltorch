@@ -28,7 +28,6 @@ local arguments={
     optim_params= {
         learningRate =  0.01  
       },
-    scaling_reward=1.0,
     size_minibatch=10,
     size_memory=100,
     discount_factor=1,

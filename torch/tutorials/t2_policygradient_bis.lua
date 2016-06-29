@@ -22,7 +22,6 @@ local arguments={
     optim_params= {
         learningRate =  0.01  
       },
-    scaling_reward=1.0/MAX_LENGTH,
     size_memory_for_bias=100
   }
 policy=rltorch.PolicyGradient(env.observation_space,env.action_space,sensor,arguments)

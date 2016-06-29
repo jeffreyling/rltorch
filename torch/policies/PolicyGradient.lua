@@ -11,7 +11,6 @@ local PolicyGradient = torch.class('rltorch.PolicyGradient','rltorch.Policy');
 ----- max_trajectory_size  = the maximum length of the trajectories
 ----- optim = the optim method (e.g optim.adam)
 ----- optim_params = the optim initial state 
------ scaling_reward = the scaling factor for the reward
 ----- arguments.size_memory_for_bias = number of steps to aggregate for computing the bias in policy gradient -- the n last reward values are used to correct the reward obtained.
 function PolicyGradient:__init(observation_space,action_space,sensor,arguments)
   rltorch.Policy.__init(self,observation_space,action_space) 
@@ -28,8 +27,6 @@ function PolicyGradient:__init(observation_space,action_space,sensor,arguments)
   
   self.optim=arguments.optim
   self.optim_params=arguments.optim_params
-  
-  if (arguments.scaling_reward==nil) then self.scaling_reward=1 else self.scaling_reward=arguments.scaling_reward end 
   
   self.policy_module=arguments.policy_module
   self.max_trajectory_size=arguments.max_trajectory_size
@@ -88,7 +85,7 @@ function PolicyGradient:sample()
 end
 
 function PolicyGradient:end_episode(feedback)
-  self.reward_trajectory=feedback*self.scaling_reward  
+  self.reward_trajectory=feedback 
   if (self.train) then   local _,fs=self.optim(self.feval,self.params,self.optim_params)  end
 end
 

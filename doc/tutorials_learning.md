@@ -52,12 +52,6 @@ local arguments={
       },
 ```
 
-  * The reward considered by the policy will be the original reward divided by 10 (just to provide an example)
-
-```lua
-    scaling_reward=0.1,
-```
-
   * The average value of the last 100 trajectories will be used in reinforce to reduce the variance 
 ```lua 
     size_memory_for_bias=100
@@ -121,7 +115,6 @@ local arguments={
     optim_params= {
         learningRate =  0.01  
       },
-    scaling_reward=1.0,
     size_minibatch=10,
     size_memory=100,
     discount_factor=1,
@@ -190,7 +183,6 @@ local arguments={
     optim_params= {
         learningRate =  0.001  
       },
-    scaling_reward=1.0/MAX_LENGTH,
     size_memory_for_bias=100
   }
   
@@ -243,7 +235,6 @@ local arguments={
     optim_params= {
         learningRate =  0.01  
       },
-    scaling_reward=1.0,
     size_memory_for_bias=100
   }
   

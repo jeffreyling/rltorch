@@ -13,7 +13,6 @@ An implementation of the REINFORCE algorithm for discrete action spaces. When cr
 
 Optionnal parameters:
 * `size_memory_for_bias`: the number of trajectories used for computing the average reward obtained by the policy. This average value is used in the reinforce algorithm and substracted to the total observed reward.
-* `scaling_reward`: the scaling factor for the received reward
 
 # RecurrentPolicyGradient
 (see tutorials/t5_recurrentpolicygradient.lua)
@@ -36,6 +35,5 @@ An approximated Q-Learning with Experience Replay. (Note: if anybody can check t
 * `size_minibatch`: the number of examples used at each gradient iteration. The examples are uniformly sampled in the memory of the policy
 * `discount_factor`: the discount factor since DeepQ aims at maximizing a discounted reward
 * `epsilon_greedy`: when `self.train=true`, the policy samples the action given an espilon greedy policy (where `epsilon_greedy` is the value of epsilon). When `self.train=false`, then the action is chosen using the max of the Q-value
-* `scaling_reward`: the scaling factor for the received reward
 
 Note that, here, the SGD step is made at the end of each trajectory (i.e in the `end_episode` function) 

@@ -13,7 +13,6 @@ local DeepQPolicy = torch.class('rltorch.DeepQPolicy','rltorch.Policy');
 ----- size_memory = the size of the memory for experience reply
 ----- discount_factor = the discount_factor
 ----- epsilon_greedy = the value of epsilon in epsilon greedy
------ scaling_reward = the reward sclaing value
 function DeepQPolicy:__init(observation_space,action_space,sensor,arguments)
   rltorch.Policy.__init(self,observation_space,action_space) 
   self.sensor=sensor
@@ -26,7 +25,6 @@ function DeepQPolicy:__init(observation_space,action_space,sensor,arguments)
   assert(arguments.size_memory~=nil)
   assert(arguments.discount_factor~=nil)
   assert(arguments.epsilon_greedy~=nil)
-  assert(arguments.scaling_reward~=nil)
   
   self.memory={}
   self.memory_position=0
@@ -35,8 +33,6 @@ function DeepQPolicy:__init(observation_space,action_space,sensor,arguments)
   self.optim=arguments.optim
   self.optim_params=arguments.optim_params
   self.is_training=true
-  
-  if (arguments.scaling_reward==nil) then self.scaling_reward=1 else self.scaling_reward=arguments.scaling_reward end 
   
   self.policy_module=arguments.policy_module
   self.max_trajectory_size=arguments.max_trajectory_size
@@ -77,7 +73,7 @@ function DeepQPolicy:init()
     
     for b=1,self.arguments.size_minibatch do
       local action=self.memory[idxs[b]].action
-      local reward=self.memory[idxs[b]].reward*self.arguments.scaling_reward
+      local reward=self.memory[idxs[b]].reward
       if (not self.memory[idxs[b]].done) then
           reward=reward+vmax[b][1]*self.arguments.discount_factor
       else
