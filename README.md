@@ -1,16 +1,17 @@
 
 This package is a Reinforcement Learning package written in LUA for Torch. It main features are (for now):
 * Different environments are provided, from classical RL environments, ATARI games, to special ones like the `multiclass classification environment` that casts a classification learning problem to a RL problem.
+  * Sequential Acquisition Environment as described in `Gabriel Dulac-Arnold, Ludovic Denoyer, Philippe Preux, Patrick Gallinari: Sequential approaches for learning datum-wise sparse representations. Machine Learning 89(1-2): 87-122 (2012)`
 * Different learning policies are provided:
   * Classic reward-based policies: Policy gradient, recurrent policy gradient, approximated q-learning with experience replay (also known as deep Q learning)
   * Imitation-based policies: Stochastic gradient-based imitation policy
+  * Predictive policies: policies which goal is to predict an output (for example in order to make classification). 
 * The different policies can be easily used with `openAI Gym` directly in python by using the `lutorpy` package
 
 More features are planed:
 * New environments: 
   * Text classification environment (sequential reading) as described in `Gabriel Dulac-Arnold, Ludovic Denoyer, Patrick Gallinari: Text Classification: A Sequential Reading Approach. ECIR 2011: 411-423`
   * Image classification with attention as described in `Gabriel Dulac-Arnold, Ludovic Denoyer, Nicolas Thome, Matthieu Cord, Patrick Gallinari: Sequentially Generated Instance-Dependent Image Representations for Classification. ICLR 2014`   
-  * Budgeted Acquisition Environment as described in `Gabriel Dulac-Arnold, Ludovic Denoyer, Philippe Preux, Patrick Gallinari: Sequential approaches for learning datum-wise sparse representations. Machine Learning 89(1-2): 87-122 (2012)`
   * ...
 * New learning policies
 
@@ -51,7 +52,8 @@ The package if composed of these different elements:
 * [Environments](doc/environments.md): different environments
   * [Classic Control Tasks](doc/env_classiccontrol.md): Classic control tasks
   * [Atari](doc/env_atari.md): Atari environments
-  * [Classic Machine Learning](doc/env_classicmachinelearning.md): We also provide some environments that correspond to classical machine learning problems seen as RL environments (multiclass classification for now, one shot learning and structured output prediction for the future)
+  * [Classic Machine Learning](doc/env_classicmachinelearning.md): We also provide some environments that correspond to classical machine learning problems seen as RL environments (multiclass classification for now, one shot learning and structured output prediction for the future).
+  *  * 
 * [Tools](doc/tools.md): different tools
 
 # OpenAI Gym

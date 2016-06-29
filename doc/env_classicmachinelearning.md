@@ -13,4 +13,16 @@ When using `reset`, you have to say if you want to use (`reset(true)`) or not (`
 * During the training mode, training examples are sampled uniformly, and the environment never stops
 * During the testing model, testing examples are sampled from the first one to the last one (one trajectory is an iteration over all the testing examples)
 
- 
+# SparseSequentialLearning_v0 
+(see t8_predictivepolicy.lua)
+
+This environment implements the MDP described in `Gabriel Dulac-Arnold, Ludovic Denoyer, Philippe Preux, Patrick Gallinari:Sequential approaches for learning datum-wise sparse representations. Machine Learning 89(1-2): 87-122 (2012)`:
+* It is based on both a training and testing dataset with associated labels
+* Each new trajectory is based on a randomly chosen training example. Each action corresponds to a features to acquire. The observation is the value of the acquired features. 
+* At each timestep, the environment returns a `feedback.target` value that corresponds to the true category of the corresponding example. No reward is provided!!
+* when using `reset(use_test)`, the `use_test` flag says if the new state is based on a testing or training example. 
+
+This environment can be used with Predictive Policies
+
+
+
