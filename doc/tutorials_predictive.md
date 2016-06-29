@@ -14,7 +14,8 @@ local parameters={}
 parameters.training_examples, parameters.training_labels,parameters.testing_examples,parameters.testing_labels = unpack(rltorch.RLFile():split_train_test(data,labels,PROPORTION_TRAIN))
 
 env = rltorch.SparseSequentialLearning_v0(parameters)
-sensor=rltorch.BatchVectorSensor(env.observation_space)```
+sensor=rltorch.BatchVectorSensor(env.observation_space)
+```
 
 Second, we create the predictive policy. The classification problem is handled as a Negative Log-Lieklihood minimization problem.
 
