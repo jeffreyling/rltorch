@@ -3,7 +3,7 @@ require 'dpnn'
   
 --- A policy based on REINFORCE for discrete action spaces, but using a derivale loss function. It is based on a feedback provided at the end of each trajectory. This feedback must be composed of a target field that corresponds to the target one wants to predict at the end of the trajectory. It can be also composed of reward that corresponds to a non derivable value. The objective is to maximize -loss+reward where loss is computed on the target through the criterion provided in the policy
 
-local PredictiveRecurrentPolicyGradient = torch.class('myrltorch.PredictiveRecurrentPolicyGradient','rltorch.Policy'); 
+local PredictiveRecurrentPolicyGradient = torch.class('rltorch.PredictiveRecurrentPolicyGradient','rltorch.Policy'); 
 
 --- ARGUMENTS= 
 ----- policy_module = the policy module (takes a 1*N matrix to a 1*A vector using the dpnn package. This module goes from the latent space to the action space)
@@ -27,6 +27,7 @@ function PredictiveRecurrentPolicyGradient:__init(observation_space,action_space
   assert(arguments.predictive_module~=nil)
   assert(arguments.criterion~=nil)
   assert(arguments.initial_recurrent_module~=nil)
+  assert(arguments.initial_state~=nil)
   assert(#arguments.recurrent_modules==action_space.n)
   assert(arguments.N~=nil)
   assert(arguments.max_trajectory_size~=nil)
@@ -103,7 +104,6 @@ function PredictiveRecurrentPolicyGradient:new_episode(initial_observation,infor
   self.position=1
   self.last_sensor=self.sensor:process(initial_observation):clone()
   self.trajectory:push_observation(self.last_sensor)
-  
   --coputing the first state. 
   self.states[1]=self.arguments.initial_recurrent_module:forward({self.arguments.initial_state,self.last_sensor})
 end
@@ -128,14 +128,14 @@ function PredictiveRecurrentPolicyGradient:sample()
 end
 
 function PredictiveRecurrentPolicyGradient:predict()
-  return self.arguments.predictive_module:forward(self.states[self.position])
+  local out=self.arguments.predictive_module:forward(self.states[self.position])
+  return out:clone():reshape(out:size(2))
 end
 
 function PredictiveRecurrentPolicyGradient:end_episode(feedback)
-  self.final_target=feedback.target:clone()
+  self.final_target=feedback.target:clone():reshape(1,feedback.target:size(1))
   self.final_reward=feedback.reward
   if (self.final_reward==nil) then self.final_reward=0 end
-  if (self.final_target:dim()==1) then self.final_target:reshape(1,self.final_target:size(1)) end
   if (self.train) then  local _,fs=self.optim(self.feval,self.params,self.optim_params)  end
 end
 

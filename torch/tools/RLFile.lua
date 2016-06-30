@@ -30,7 +30,7 @@ function RLFile:read_libsvm(filename)
     for k=1,i_f:size(1) do examples[i][i_f[k]]=v_f[k] end
     labels[i]=index_categories[data[i][1]]      
   end
-  return {examples,labels}   
+  return {examples,labels,#index_categories}   
 end
 
 --- generate a split (train and test) over a data and labels matrices. 

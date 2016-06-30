@@ -24,6 +24,7 @@ include('CartPole_v0.lua')
 include('Atari_v0.lua')
 include('Atari_Breakout_v0.lua')
 
+include('SparseSequentialLearning_v0.lua')
 include('MulticlassClassification_v0.lua')
 
 include('EmptyMaze_v0.lua')
@@ -34,6 +35,7 @@ include('PolicyGradient.lua')
 include('DeepQPolicy.lua')
 include('RecurrentPolicyGradient.lua')
 include('StochasticGradientImitationPolicy.lua')
+include('PredictiveRecurrentPolicyGradient.lua')
 
 include('ExperimentLog.lua')
 include('ExperimentLogCSV.lua')
