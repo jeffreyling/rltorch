@@ -9,7 +9,7 @@ math.randomseed(os.time())
 local TEST_SIZE=100 -- The number of trajectories
 local TRAIN_SIZE=100 -- The number of trajectories
 local NB_ITERATIONS=1000 -- The number of training example to sample for each trajectory
-local NB_FEATURES=10
+local NB_FEATURES=5
 
 local PROPORTION_TRAIN=0.5
 local data,labels,nb_categories = unpack(rltorch.RLFile():read_libsvm('datasets/breast-cancer_scale'))
@@ -41,7 +41,7 @@ for a=1,nb_actions do
   recurrent_modules[a]:reset(STDV)
 end
 --the module that maps the latent space to the final prediction
-local predictive_module=nn.Linear(N,nb_categories)
+local predictive_module=nn.Linear(N,nb_categories); predictive_module:reset(STDV)
 
 -- the predictive criterion
 local criterion=nn.CrossEntropyCriterion()
@@ -63,7 +63,6 @@ local arguments={
   }
   
 policy=rltorch.PredictiveRecurrentPolicyGradient(env.observation_space,env.action_space,sensor,arguments)
-
 local train_losses={}
 local test_losses={}
 for i=1,NB_ITERATIONS do

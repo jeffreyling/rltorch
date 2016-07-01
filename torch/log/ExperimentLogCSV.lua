@@ -13,6 +13,8 @@ function ExperimentLogCSV:JSONToCSV(js,level)
   for k,v in pairs(js) do
       if (type(v)=="table") then    
         retour[k]=json.encode(v)
+      elseif (type(v)~="string") then
+        retour[k]=tostring(v)
       else
         retour[k]=v
       end

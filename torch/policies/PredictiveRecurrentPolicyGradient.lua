@@ -68,7 +68,7 @@ function PredictiveRecurrentPolicyGradient:init()
     --Store the last reward in the reward memory (for variance stuff)
     local output=self.arguments.predictive_module:forward(self.states[self.position])
     local loss=self.arguments.criterion:forward(output,self.final_target)
-    loss=-loss+self.final_reward
+    loss=-loss
     
     if (self.memory_reward_position>self.memory_reward:size(1)) then self.memory_reward:resize(self.memory_reward_position) end
     self.memory_reward[self.memory_reward_position]=-loss
@@ -134,8 +134,6 @@ end
 
 function PredictiveRecurrentPolicyGradient:end_episode(feedback)
   self.final_target=feedback.target:clone():reshape(1,feedback.target:size(1))
-  self.final_reward=feedback.reward
-  if (self.final_reward==nil) then self.final_reward=0 end
   if (self.train) then  local _,fs=self.optim(self.feval,self.params,self.optim_params)  end
 end
 
