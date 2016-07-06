@@ -1,10 +1,12 @@
+-- TODO: modify this
 
  
 local BatchVectorSensor = torch.class('rltorch.BatchVectorSensor','rltorch.Sensor'); 
 
 --- Transform a single (n) torch.Tensor to a (1,n) torch Tensor.
-function BatchVectorSensor:__init(observation_space)
+function BatchVectorSensor:__init(observation_space, batch_size)
   rltorch.Sensor.__init(self,observation_space)
+  self.batch_size = batch_size
   
   if (torch.type(observation_space)=="rltorch.Box") then
     self.current_size=observation_space.low:nElement()

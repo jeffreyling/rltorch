@@ -68,9 +68,9 @@ function PolicyGradient:new_episode(initial_observation,informations)
   self.trajectory:push_observation(self.last_sensor)
 end
 
-function  PolicyGradient:observe(observation)  
+function  PolicyGradient:observe(observations)  
+  -- TODO: fix batch observation
   self.last_sensor=self.sensor:process(observation):clone()
-  --print(self.last_sensor)
   self.trajectory:push_observation(self.last_sensor)  
 end
 
